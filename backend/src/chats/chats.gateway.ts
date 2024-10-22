@@ -18,7 +18,7 @@ export class ChatsGateway implements OnGatewayDisconnect, OnGatewayConnection{
   }
 
   @SubscribeMessage("call-user")
-  async handleCallUser(@MessageBody() data : {to : string, offer: string}, @ConnectedSocket() client : Socket){
+  async handleCallUser(@MessageBody() data : {to : string, offer: RTCSessionDescriptionInit}, @ConnectedSocket() client : Socket){
     await this.server.to(data.to).emit('receive-call', {
       from: client.id,
       offer: data.offer
@@ -26,10 +26,18 @@ export class ChatsGateway implements OnGatewayDisconnect, OnGatewayConnection{
   }
 
   @SubscribeMessage("answer-call")
-  async handleAnswerCall(@MessageBody() data : {to : string, answer: string}, @ConnectedSocket() client : Socket){
+  async handleAnswerCall(@MessageBody() data : {to : string, answer: RTCSessionDescriptionInit}, @ConnectedSocket() client : Socket){
     await this.server.to(data.to).emit('call-answered', {
       from: client.id,
       answer: data.answer
     })
+  }
+
+  @SubscribeMessage('send-ice-candidate')
+  async handleSendIceCandidate(@MessageBody() data : {to: string, candidate : RTCIceCandidate}, @ConnectedSocket() client: Socket){
+    this.server.to(data.to).emit('ice-candidate', {
+      from: client.id,
+      candidate: data.candidate,
+    });
   }
 }

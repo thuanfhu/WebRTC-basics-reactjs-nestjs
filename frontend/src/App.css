@@ -1,38 +1,301 @@
-.App {
-  text-align: center;
+/* src/App.css */
+
+/* Reset một số mặc định của trình duyệt */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Sử dụng CSS Variables để dễ dàng quản lý màu sắc và các thông số chung */
+:root {
+  --primary-color: #6a11cb;
+  --secondary-color: #2575fc;
+  --accent-color: #ff416c;
+  --background-gradient: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  --button-gradient-call: linear-gradient(135deg, #6a11cb, #2575fc);
+  --button-gradient-answer: linear-gradient(135deg, #43e97b, #38f9d7);
+  --button-gradient-hover-call: linear-gradient(135deg, #2575fc, #6a11cb);
+  --button-gradient-hover-answer: linear-gradient(135deg, #38f9d7, #43e97b);
+  --notification-gradient: linear-gradient(135deg, #ffecd2, #fcb69f);
+  --text-color: #333333;
+  --subtext-color: #666666;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --hover-shadow-color: rgba(0, 0, 0, 0.2);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Thiết lập font chữ chung cho ứng dụng */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--background-gradient);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.5s ease;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Container chính của ứng dụng */
+.container {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 25px;
+  box-shadow: 0 20px 40px var(--shadow-color);
+  width: 95%;
+  max-width: 1000px;
+  padding: 50px 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Header ứng dụng */
+.header {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.header h1 {
+  color: var(--text-color);
+  font-size: 3rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.header p {
+  color: var(--subtext-color);
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+/* Hiển thị mã ID người dùng */
+.header .user-id {
+  background: var(--background-gradient);
+  padding: 10px 15px;
+  border-radius: 10px;
+  display: inline-block;
+  font-weight: bold;
+  color: #fff;
+  box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+/* Phần video */
+.video-section {
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  gap: 40px;
+  margin-bottom: 40px;
+  width: 100%;
 }
 
-.App-link {
-  color: #61dafb;
+.video-container {
+  position: relative;
+  width: 45%;
+  border: 3px solid var(--secondary-color);
+  border-radius: 20px;
+  overflow: hidden;
+  background: #000000;
+  box-shadow: 0 10px 20px var(--shadow-color);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-@keyframes App-logo-spin {
+.video-container:hover {
+  transform: scale(1.02);
+  box-shadow: 0 15px 30px var(--hover-shadow-color);
+}
+
+.video-container video {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+}
+
+.video-container p {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* Phần điều khiển */
+.controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.controls input {
+  width: 80%;
+  max-width: 600px;
+  padding: 15px 25px;
+  border: 3px solid var(--secondary-color);
+  border-radius: 15px;
+  font-size: 1.1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.controls input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px rgba(106, 17, 203, 0.5);
+  outline: none;
+}
+
+/* Nút gọi và trả lời */
+.button-group {
+  display: flex;
+  gap: 30px;
+}
+
+button {
+  padding: 15px 35px;
+  border: none;
+  border-radius: 15px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  color: #ffffff;
+  box-shadow: 0 8px 20px var(--shadow-color);
+}
+
+.call-button {
+  background: var(--button-gradient-call);
+}
+
+.call-button:hover {
+  background: var(--button-gradient-hover-call);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px var(--hover-shadow-color);
+}
+
+.answer-button {
+  background: var(--button-gradient-answer);
+}
+
+.answer-button:hover {
+  background: var(--button-gradient-hover-answer);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px var(--hover-shadow-color);
+}
+
+/* Hiển thị thông báo khi nhận cuộc gọi */
+.call-notification {
+  background: var(--notification-gradient);
+  border: 3px solid var(--accent-color);
+  padding: 25px 30px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+  animation: slideDown 0.6s ease-in-out;
+  box-shadow: 0 10px 25px var(--shadow-color);
+}
+
+.call-notification p {
+  color: #d63031;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.call-notification button {
+  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+  padding: 12px 30px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  color: #fff;
+  box-shadow: 0 6px 15px var(--shadow-color);
+}
+
+.call-notification button:hover {
+  background: linear-gradient(135deg, #fad0c4 0%, #ff9a9e 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px var(--hover-shadow-color);
+}
+
+/* Animations */
+@keyframes fadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(-30px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .video-section {
+    flex-direction: row;
+    gap: 25px;
+  }
+
+  .video-container {
+    width: 48%;
+  }
+}
+
+@media (max-width: 768px) {
+  .video-section {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .video-container {
+    width: 80%;
+  }
+
+  .controls input {
+    width: 90%;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 2.2rem;
+  }
+
+  .header p, .controls input, .controls button, .call-notification p {
+    font-size: 1rem;
+  }
+
+  .video-container p {
+    font-size: 0.8rem;
   }
 }
