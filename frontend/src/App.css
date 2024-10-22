@@ -1,301 +1,500 @@
-/* src/App.css */
+  /* src/App.css */
 
-/* Reset một số mặc định của trình duyệt */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Sử dụng CSS Variables để dễ dàng quản lý màu sắc và các thông số chung */
-:root {
-  --primary-color: #6a11cb;
-  --secondary-color: #2575fc;
-  --accent-color: #ff416c;
-  --background-gradient: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-  --button-gradient-call: linear-gradient(135deg, #6a11cb, #2575fc);
-  --button-gradient-answer: linear-gradient(135deg, #43e97b, #38f9d7);
-  --button-gradient-hover-call: linear-gradient(135deg, #2575fc, #6a11cb);
-  --button-gradient-hover-answer: linear-gradient(135deg, #38f9d7, #43e97b);
-  --notification-gradient: linear-gradient(135deg, #ffecd2, #fcb69f);
-  --text-color: #333333;
-  --subtext-color: #666666;
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --hover-shadow-color: rgba(0, 0, 0, 0.2);
-}
-
-/* Thiết lập font chữ chung cho ứng dụng */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--background-gradient);
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background 0.5s ease;
-}
-
-/* Container chính của ứng dụng */
-.container {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 25px;
-  box-shadow: 0 20px 40px var(--shadow-color);
-  width: 95%;
-  max-width: 1000px;
-  padding: 50px 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  animation: fadeIn 1s ease-in-out;
-}
-
-/* Header ứng dụng */
-.header {
-  margin-bottom: 40px;
-  text-align: center;
-}
-
-.header h1 {
-  color: var(--text-color);
-  font-size: 3rem;
-  margin-bottom: 10px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.header p {
-  color: var(--subtext-color);
-  font-size: 1.2rem;
-  margin-bottom: 5px;
-}
-
-/* Hiển thị mã ID người dùng */
-.header .user-id {
-  background: var(--background-gradient);
-  padding: 10px 15px;
-  border-radius: 10px;
-  display: inline-block;
-  font-weight: bold;
-  color: #fff;
-  box-shadow: 0 5px 15px var(--shadow-color);
-}
-
-/* Phần video */
-.video-section {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  margin-bottom: 40px;
-  width: 100%;
-}
-
-.video-container {
-  position: relative;
-  width: 45%;
-  border: 3px solid var(--secondary-color);
-  border-radius: 20px;
-  overflow: hidden;
-  background: #000000;
-  box-shadow: 0 10px 20px var(--shadow-color);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.video-container:hover {
-  transform: scale(1.02);
-  box-shadow: 0 15px 30px var(--hover-shadow-color);
-}
-
-.video-container video {
-  width: 100%;
-  height: auto;
-  border-radius: 20px;
-}
-
-.video-container p {
-  position: absolute;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 8px 12px;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: bold;
-}
-
-/* Phần điều khiển */
-.controls {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 25px;
-}
-
-.controls input {
-  width: 80%;
-  max-width: 600px;
-  padding: 15px 25px;
-  border: 3px solid var(--secondary-color);
-  border-radius: 15px;
-  font-size: 1.1rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.controls input:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 10px rgba(106, 17, 203, 0.5);
-  outline: none;
-}
-
-/* Nút gọi và trả lời */
-.button-group {
-  display: flex;
-  gap: 30px;
-}
-
-button {
-  padding: 15px 35px;
-  border: none;
-  border-radius: 15px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.4s ease;
-  color: #ffffff;
-  box-shadow: 0 8px 20px var(--shadow-color);
-}
-
-.call-button {
-  background: var(--button-gradient-call);
-}
-
-.call-button:hover {
-  background: var(--button-gradient-hover-call);
-  transform: translateY(-5px);
-  box-shadow: 0 12px 25px var(--hover-shadow-color);
-}
-
-.answer-button {
-  background: var(--button-gradient-answer);
-}
-
-.answer-button:hover {
-  background: var(--button-gradient-hover-answer);
-  transform: translateY(-5px);
-  box-shadow: 0 12px 25px var(--hover-shadow-color);
-}
-
-/* Hiển thị thông báo khi nhận cuộc gọi */
-.call-notification {
-  background: var(--notification-gradient);
-  border: 3px solid var(--accent-color);
-  padding: 25px 30px;
-  border-radius: 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 30px;
-  animation: slideDown 0.6s ease-in-out;
-  box-shadow: 0 10px 25px var(--shadow-color);
-}
-
-.call-notification p {
-  color: #d63031;
-  margin-bottom: 20px;
-  font-size: 1.3rem;
-  font-weight: bold;
-}
-
-.call-notification button {
-  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-  padding: 12px 30px;
-  border: none;
-  border-radius: 12px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-  color: #fff;
-  box-shadow: 0 6px 15px var(--shadow-color);
-}
-
-.call-notification button:hover {
-  background: linear-gradient(135deg, #fad0c4 0%, #ff9a9e 100%);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px var(--hover-shadow-color);
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .video-section {
-    flex-direction: row;
-    gap: 25px;
+  /* Reset một số mặc định của trình duyệt */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
-  .video-container {
-    width: 48%;
+  /* Sử dụng CSS Variables để dễ dàng quản lý màu sắc và các thông số chung */
+  :root {
+    /* Màu sắc chính */
+    --primary-gradient: linear-gradient(135deg, #6a11cb, #2575fc);
+    --secondary-gradient: linear-gradient(135deg, #43cea2, #185a9d);
+    --accent-gradient: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    --notification-gradient: linear-gradient(135deg, #ffecd2, #fcb69f);
+    
+    /* Màu sắc nút */
+    --button-gradient-call: linear-gradient(135deg, #28a745, #218838); /* Đổi màu xanh lá cây */
+    --button-gradient-answer: linear-gradient(135deg, #007bff, #0056b3); /* Đổi màu xanh dương */
+    --button-gradient-hover-call: linear-gradient(135deg, #218838, #28a745);
+    --button-gradient-hover-answer: linear-gradient(135deg, #0056b3, #007bff);
+    
+    /* Màu sắc tĩnh */
+    --text-color: #2c3e50;
+    --subtext-color: #34495e;
+    --light-bg: #f5f7fa;
+    --dark-bg: #c3cfe2;
+    
+    /* Bóng đổ */
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --hover-shadow-color: rgba(0, 0, 0, 0.2);
+    
+    /* Hiệu ứng chuyển đổi */
+    --transition-speed: 0.3s;
   }
-}
 
-@media (max-width: 768px) {
-  .video-section {
-    flex-direction: column;
-    gap: 25px;
+  /* Thiết lập font chữ chung cho ứng dụng */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--primary-gradient);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background var(--transition-speed) ease;
+    position: relative;
+    overflow: hidden; /* Đảm bảo overlay không gây cuộn */
   }
 
-  .video-container {
-    width: 80%;
-  }
-
-  .controls input {
+  /* Container chính của ứng dụng */
+  .container {
+    position: relative; /* Để các overlay được đặt bên trên */
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 15px 30px var(--shadow-color);
     width: 90%;
-  }
-
-  .button-group {
+    max-width: 1200px;
+    padding: 40px 30px;
+    display: flex;
     flex-direction: column;
-    gap: 20px;
+    align-items: center;
+    animation: fadeIn 1s ease-in-out;
   }
 
-  button {
-    width: 100%;
+  /* Header ứng dụng */
+  .header {
+    margin-bottom: 30px;
     text-align: center;
   }
-}
 
-@media (max-width: 480px) {
   .header h1 {
-    font-size: 2.2rem;
+    color: var(--text-color);
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
   }
 
-  .header p, .controls input, .controls button, .call-notification p {
-    font-size: 1rem;
+  .header p {
+    color: var(--subtext-color);
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+  }
+
+  /* Hiển thị mã ID người dùng */
+  .header .user-id {
+    color: #ff4b2b; /* Đổi màu chữ */
+  }
+
+  /* Phần video */
+  .video-section {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .video-container {
+    position: relative;
+    width: 45%;
+    max-width: 500px;
+    border: 3px solid var(--secondary-gradient);
+    border-radius: 15px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 10px 20px var(--shadow-color);
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  }
+
+  .video-container:hover {
+    transform: scale(1.02);
+    box-shadow: 0 15px 30px var(--hover-shadow-color);
+  }
+
+  .video-container video {
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+    background: #000;
   }
 
   .video-container p {
-    font-size: 0.8rem;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    animation: fadeInUp 0.5s ease-in-out;
   }
-}
+
+  /* Phần điều khiển */
+  .controls {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .controls input {
+    width: 80%;
+    max-width: 600px;
+    padding: 12px 20px;
+    border: 2px solid var(--secondary-gradient);
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  }
+
+  .controls input:focus {
+    border-color: var(--primary-gradient);
+    box-shadow: 0 0 10px rgba(106, 17, 203, 0.5);
+    outline: none;
+  }
+
+  /* Nút gọi và trả lời */
+  .button-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 15px var(--shadow-color);
+  }
+
+  button svg {
+    margin-right: 8px;
+    font-size: 1.2rem;
+  }
+
+  .call-button {
+    background: var(--button-gradient-call);
+  }
+
+  .call-button:hover {
+    background: var(--button-gradient-hover-call);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px var(--hover-shadow-color);
+  }
+
+  .answer-button {
+    background: var(--button-gradient-answer);
+  }
+
+  .answer-button:hover {
+    background: var(--button-gradient-hover-answer);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px var(--hover-shadow-color);
+  }
+
+  /* Hiển thị thông báo khi nhận cuộc gọi */
+  .call-notification {
+    background: var(--notification-gradient);
+    border: 2px solid var(--accent-gradient);
+    padding: 20px 25px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 25px;
+    animation: slideDown 0.6s ease-in-out;
+    box-shadow: 0 10px 25px var(--shadow-color);
+  }
+
+  .call-notification p {
+    color: #d63031;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center; /* Căn giữa */
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .call-notification button {
+    background: var(--button-gradient-answer);
+    padding: 10px 25px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background var(--transition-speed) ease, transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    color: #fff;
+    box-shadow: 0 5px 15px var(--shadow-color);
+  }
+
+  .call-notification button:hover {
+    background: var(--button-gradient-hover-answer);
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px var(--hover-shadow-color);
+  }
+
+  /* Additional Controls */
+  .additional-controls {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  /* Mic Button */
+  .mic-button,
+  .camera-button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .mic-button.active,
+  .camera-button.active {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  }
+
+  .mic-button.inactive,
+  .camera-button.inactive {
+    background: linear-gradient(135deg, #cfd9df, #e2ebf0);
+    color: #333333;
+  }
+
+  .mic-button.active:hover,
+  .camera-button.active:hover {
+    background: linear-gradient(135deg, #e63946, #f3722c);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .mic-button.inactive:hover,
+  .camera-button.inactive:hover {
+    background: linear-gradient(135deg, #a0a4a8, #bfc5cc);
+  }
+
+  /* End Call Button */
+  .end-call-button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    color: #fff;
+    background: linear-gradient(135deg, #ff4b2b, #ff416c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .end-call-button:hover {
+    background: linear-gradient(135deg, #e63946, #f3722c);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Overlay khi đang gọi */
+  .calling-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Màu mờ nền */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Đảm bảo overlay luôn trên cùng */
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .calling-notification {
+    background: var(--notification-gradient);
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px var(--shadow-color);
+    text-align: center;
+    animation: pulse 1.5s infinite;
+  }
+
+  .calling-notification p {
+    color: #d63031;
+    font-size: 1.3rem;
+    font-weight: bold;
+  }
+
+  /* Animation pulse cho thông báo cuộc gọi */
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    }
+    50% {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    }
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Tooltip */
+  button[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity var(--transition-speed) ease;
+    pointer-events: none;
+  }
+
+  button::after {
+    content: '';
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity var(--transition-speed) ease;
+    pointer-events: none;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .video-section {
+      flex-direction: row;
+      gap: 25px;
+    }
+
+    .video-container {
+      width: 48%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .video-section {
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .video-container {
+      width: 80%;
+    }
+
+    .controls input {
+      width: 90%;
+    }
+
+    .button-group {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .additional-controls {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    button svg {
+      margin-right: 5px;
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header h1 {
+      font-size: 2.2rem;
+    }
+
+    .header p, .controls input, .controls button, .call-notification p {
+      font-size: 1rem;
+    }
+
+    .video-container p {
+      font-size: 0.8rem;
+    }
+
+    .additional-controls {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    button svg {
+      margin-right: 5px;
+      font-size: 1rem;
+    }
+  }
