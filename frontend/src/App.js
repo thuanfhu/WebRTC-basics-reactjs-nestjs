@@ -13,6 +13,7 @@ function App() {
   const [callerId, setCallerId] = useState('');
   const [callerOffer, setCallerOffer] = useState(null);
   const [callAccepted, setCallAccepted] = useState(false);
+  const [iceCandidateQueue, setIceCandidateQueue] = useState([]);
 
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
@@ -51,6 +52,8 @@ function App() {
       if (connectionRef.current) {
         connectionRef.current.addIceCandidate(new RTCIceCandidate(data.candidate))
           .catch((err) => console.error('Error adding received ice candidate', err));
+      } else {
+        setIceCandidateQueue(prevQueue => [...prevQueue, data.candidate]);
       }
     });
 
@@ -118,6 +121,13 @@ function App() {
       socket.emit('answer-call', { to: callerId, answer });
 
       connectionRef.current = peer;
+
+      iceCandidateQueue.forEach(candidate => {
+        connectionRef.current.addIceCandidate(new RTCIceCandidate(candidate))
+          .catch((err) => console.error('Error adding ice candidate from queue', err));
+      });
+      setIceCandidateQueue([]);
+
     } catch (err) {
       console.error('Error answering call:', err);
       setIsCalling(false);
