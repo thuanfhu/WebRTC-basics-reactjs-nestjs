@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
 import './App.css';
@@ -17,44 +16,37 @@ function App() {
 
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
-  const [isCalling, setIsCalling] = useState(false); // Thêm state isCalling
+  const [isCalling, setIsCalling] = useState(false);
 
   const myVideoRef = useRef();
   const userVideoRef = useRef();
   const connectionRef = useRef();
 
   useEffect(() => {
-    // Kết nối với Socket.IO và nhận ID
     socket.on('connect', () => {
       setMyId(socket.id);
     });
 
-    // Lấy stream từ camera và microphone
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((currentStream) => {
       setStream(currentStream);
-      if (myVideoRef.current) {
-        myVideoRef.current.srcObject = currentStream;
-      }
+      if (myVideoRef.current) myVideoRef.current.srcObject = currentStream;
     });
 
-    // Lắng nghe sự kiện nhận cuộc gọi
     socket.on('receive-call', (data) => {
       setReceivingCall(true);
       setCallerId(data.from);
       setCallerOffer(data.offer);
     });
 
-    // Lắng nghe sự kiện cuộc gọi được trả lời
     socket.on('call-answered', (data) => {
       if (connectionRef.current) {
         connectionRef.current.setRemoteDescription(new RTCSessionDescription(data.answer))
           .catch((err) => console.error('Error setting remote description:', err));
       }
       setCallAccepted(true);
-      setIsCalling(false); // Đặt lại trạng thái khi cuộc gọi được trả lời
+      setIsCalling(false);
     });
 
-    // Lắng nghe và thêm ICE candidate
     socket.on('ice-candidate', (data) => {
       if (connectionRef.current) {
         connectionRef.current.addIceCandidate(new RTCIceCandidate(data.candidate))
@@ -62,7 +54,6 @@ function App() {
       }
     });
 
-    // Clean up khi component bị unmount
     return () => {
       socket.off('connect');
       socket.off('receive-call');
@@ -71,68 +62,52 @@ function App() {
     };
   }, []);
 
-  // Hàm chung tạo RTCPeerConnection và xử lý các sự kiện
   const createPeerConnection = (toId, isCaller) => {
-    const peer = new RTCPeerConnection({
-      iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-      ],
-    });
+    const peer = new RTCPeerConnection({iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]});
 
-    // Xử lý ICE candidate
     peer.onicecandidate = (event) => {
-      if (event.candidate) {
-        socket.emit('send-ice-candidate', { to: toId, candidate: event.candidate });
-      }
+      if (event.candidate) socket.emit('send-ice-candidate', { to: toId, candidate: event.candidate });
     };
 
-    // Xử lý khi nhận stream từ đối tác
     peer.ontrack = (event) => {
-      if (userVideoRef.current) {
-        userVideoRef.current.srcObject = event.streams[0];
-      }
+      if (userVideoRef.current) userVideoRef.current.srcObject = event.streams[0];
     };
 
-    // Thêm các track từ stream vào peer connection
     stream.getTracks().forEach(track => peer.addTrack(track, stream));
 
-    if (isCaller) {
-      connectionRef.current = peer; // Lưu kết nối của người gọi vào ref
-    }
+    if (isCaller) connectionRef.current = peer; 
 
     return peer;
   };
 
-  // Hàm thực hiện cuộc gọi (caller)
   const callUser = async () => {
     if (!calleeId) {
-      alert('Vui lòng nhập ID người nhận!');
+      alert('Vui lòng nhập ID người nhận!'); 
       return;
     }
 
-    setIsCalling(true); // Đặt trạng thái đang gọi
+    setIsCalling(true); 
 
-    const peer = createPeerConnection(calleeId, true); // Tạo kết nối và đánh dấu là caller
+    const peer = createPeerConnection(calleeId, true); 
 
     try {
       const offer = await peer.createOffer();
       await peer.setLocalDescription(offer);
 
       socket.emit('call-user', { to: calleeId, offer });
+      connectionRef.current = peer;
 
-      connectionRef.current = peer; // Lưu peer connection
     } catch (err) {
       console.error('Error creating offer:', err);
-      setIsCalling(false); // Đặt lại trạng thái nếu có lỗi
+      setIsCalling(false);
     }
   };
 
-  // Hàm trả lời cuộc gọi (callee)
   const answerCall = async () => {
     setCallAccepted(true);
-    setIsCalling(false); // Đặt lại trạng thái khi trả lời cuộc gọi
+    setIsCalling(false);
 
-    const peer = createPeerConnection(callerId, false); // Tạo kết nối và đánh dấu là callee
+    const peer = createPeerConnection(callerId, false);
 
     try {
       await peer.setRemoteDescription(new RTCSessionDescription(callerOffer));
@@ -142,14 +117,13 @@ function App() {
 
       socket.emit('answer-call', { to: callerId, answer });
 
-      connectionRef.current = peer; // Lưu peer connection
+      connectionRef.current = peer;
     } catch (err) {
       console.error('Error answering call:', err);
-      setIsCalling(false); // Đặt lại trạng thái nếu có lỗi
+      setIsCalling(false);
     }
   };
 
-  // Hàm bật/tắt mic
   const toggleMic = () => {
     if (stream) {
       stream.getAudioTracks().forEach(track => {
@@ -159,7 +133,6 @@ function App() {
     }
   };
 
-  // Hàm bật/tắt camera
   const toggleCamera = () => {
     if (stream) {
       stream.getVideoTracks().forEach(track => {
@@ -169,29 +142,21 @@ function App() {
     }
   };
 
-  // Hàm kết thúc cuộc gọi
   const endCall = () => {
-    // Đóng kết nối peer
     if (connectionRef.current) {
       connectionRef.current.close();
       connectionRef.current = null;
     }
 
-    // Dừng các track media
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
       setStream(null);
     }
 
-    // Reset state
-    setCallAccepted(false);
-    setReceivingCall(false);
-    setCallerId('');
-    setCallerOffer(null);
-    setCalleeId('');
-    setIsMicOn(true);
-    setIsCameraOn(true);
-    setIsCalling(false); // Đặt lại trạng thái khi kết thúc cuộc gọi
+    setCallAccepted(false); setReceivingCall(false);
+    setCallerId(''); setCallerOffer(null);
+    setCalleeId(''); setIsMicOn(true);
+    setIsCameraOn(true); setIsCalling(false); 
   };
 
   return (
@@ -204,7 +169,7 @@ function App() {
 
       <div className="video-section">
         <div className="video-container">
-          <video ref={myVideoRef} autoPlay playsInline muted />
+          <video ref={myVideoRef} autoPlay playsInline muted/>
           <p>Bạn</p>
         </div>
         {callAccepted && (
@@ -216,6 +181,7 @@ function App() {
       </div>
 
       <div className="controls">
+        
         <input
           type="text"
           value={calleeId}
@@ -233,7 +199,6 @@ function App() {
           )}
         </div>
 
-        {/* Thêm các nút điều khiển mới */}
         {callAccepted && (
           <div className="additional-controls">
             <button className={`mic-button ${isMicOn ? 'active' : 'inactive'}`} onClick={toggleMic} data-tooltip={isMicOn ? 'Tắt Mic' : 'Bật Mic'}>
@@ -261,7 +226,6 @@ function App() {
         </div>
       )}
 
-      {/* Thêm thông báo khi đang gọi */}
       {isCalling && (
         <div className="calling-overlay">
           <div className="calling-notification">
@@ -269,6 +233,7 @@ function App() {
           </div>
         </div>
       )}
+
     </div>
   );
 }
