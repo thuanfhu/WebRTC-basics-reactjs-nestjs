@@ -22,6 +22,7 @@ function App() {
   const myVideoRef = useRef();
   const userVideoRef = useRef();
   const connectionRef = useRef();
+  const endCallRef = useRef(null);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -57,11 +58,16 @@ function App() {
       }
     });
 
+    socket.on('end-call', () => {
+      if (endCallRef.current) endCallRef.current();
+    });
+
     return () => {
       socket.off('connect');
       socket.off('receive-call');
       socket.off('call-answered');
       socket.off('ice-candidate');
+      socket.off('end-call')
     };
   }, []);
 
@@ -157,16 +163,27 @@ function App() {
       connectionRef.current.close();
       connectionRef.current = null;
     }
-
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      setStream(null);
-    }
-
-    setCallAccepted(false); setReceivingCall(false);
-    setCallerId(''); setCallerOffer(null);
-    setCalleeId(''); setIsMicOn(true);
-    setIsCameraOn(true); setIsCalling(false); 
+  
+    if (stream) stream.getTracks().forEach(track => track.stop());
+  
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((currentStream) => {
+      setStream(currentStream);
+      if (myVideoRef.current) {
+        myVideoRef.current.srcObject = currentStream;
+      }
+    }).catch((err) => {console.error('Error restarting media devices:', err)});
+  
+    setCallAccepted(false);
+    setReceivingCall(false);
+    setCallerId('');
+    setCallerOffer(null);
+    setCalleeId('');
+    setIsMicOn(true);
+    setIsCameraOn(true);
+    setIsCalling(false);
+  
+    if (callerId) socket.emit('end-call', { to: callerId });
+    else if (calleeId) socket.emit('end-call', { to: calleeId });
   };
 
   return (

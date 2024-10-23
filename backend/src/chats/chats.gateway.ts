@@ -9,12 +9,11 @@ export class ChatsGateway implements OnGatewayDisconnect, OnGatewayConnection{
   @WebSocketServer() server : Server
 
   handleConnection(client: Socket) {
-    console.log(`Client connected: ${client.id}`);
     client.join(client.id); 
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`Client disconnected: ${client.id}`);
+    this.server.to(client.id).emit('end-call');
   }
 
   @SubscribeMessage("call-user")
@@ -40,4 +39,9 @@ export class ChatsGateway implements OnGatewayDisconnect, OnGatewayConnection{
       candidate: data.candidate,
     });
   }
+
+  @SubscribeMessage('end-call')
+  async handleEndCall(@MessageBody() data: { to: string }, @ConnectedSocket() client: Socket) {
+    await this.server.to(data.to).emit('end-call', { from: client.id });
+  } 
 }
