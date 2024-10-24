@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import io from 'socket.io-client';
 import './App.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -22,7 +22,35 @@ function App() {
   const myVideoRef = useRef();
   const userVideoRef = useRef();
   const connectionRef = useRef();
-  const endCallRef = useRef(null);
+  const endCallRef = useRef();
+
+  const endCall = useCallback(() => {
+    if (connectionRef.current) {
+      connectionRef.current.close();
+      connectionRef.current = null;
+    }
+
+    if (stream) stream.getTracks().forEach(track => track.stop());
+
+    setCallAccepted(false); setReceivingCall(false);
+    setCallerId(''); setCallerOffer(null);
+    setCalleeId(''); setIsMicOn(true);
+    setIsCameraOn(true); setIsCalling(false);
+
+    if (callerId) socket.emit('end-call', { to: callerId });
+    else if (calleeId) socket.emit('end-call', { to: calleeId });
+
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then((currentStream) => {
+        setStream(currentStream);
+        if (myVideoRef.current) myVideoRef.current.srcObject = currentStream;
+      })
+      .catch((err) => {console.error('Error restarting media devices:', err)});
+  }, [callerId, calleeId, stream]);
+
+  useEffect(() => {
+    endCallRef.current = endCall;
+  }, [endCall]);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -156,34 +184,6 @@ function App() {
         setIsCameraOn(track.enabled);
       });
     }
-  };
-
-  const endCall = () => {
-    if (connectionRef.current) {
-      connectionRef.current.close();
-      connectionRef.current = null;
-    }
-  
-    if (stream) stream.getTracks().forEach(track => track.stop());
-  
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((currentStream) => {
-      setStream(currentStream);
-      if (myVideoRef.current) {
-        myVideoRef.current.srcObject = currentStream;
-      }
-    }).catch((err) => {console.error('Error restarting media devices:', err)});
-  
-    setCallAccepted(false);
-    setReceivingCall(false);
-    setCallerId('');
-    setCallerOffer(null);
-    setCalleeId('');
-    setIsMicOn(true);
-    setIsCameraOn(true);
-    setIsCalling(false);
-  
-    if (callerId) socket.emit('end-call', { to: callerId });
-    else if (calleeId) socket.emit('end-call', { to: calleeId });
   };
 
   return (
